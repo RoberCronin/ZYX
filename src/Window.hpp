@@ -10,10 +10,10 @@ public:
     Window(u_int32_t width, u_int32_t height, std::string title);
     Window();
 
-    void run();
+    inline GLFWwindow* GetContext() const { return m_Window; }
 
 private:
-    void init();
+    void InitWindow();
 
     int m_Width, m_Height;
     std::string m_Title;
