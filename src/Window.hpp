@@ -11,11 +11,11 @@ public:
     Window();
 
     void run();
-    void init();
-    void loop();
 
 private:
-    u_int32_t m_Width, m_Height;
+    void init();
+
+    int m_Width, m_Height;
     std::string m_Title;
     GLFWwindow* m_Window;
 };

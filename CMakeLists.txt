@@ -14,6 +14,13 @@ include_directories(
 add_executable(${PROJECT_NAME}
 src/main.cpp
 src/Window.cpp
+src/external/imgui/imgui_demo.cpp
+src/external/imgui/imgui_draw.cpp
+src/external/imgui/imgui_impl_glfw.cpp
+src/external/imgui/imgui_impl_opengl3.cpp
+src/external/imgui/imgui_tables.cpp
+src/external/imgui/imgui_widgets.cpp
+src/external/imgui/imgui.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
