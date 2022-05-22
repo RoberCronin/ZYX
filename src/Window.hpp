@@ -7,15 +7,21 @@
 class Window
 {
 public:
-    Window(u_int32_t width, u_int32_t height, std::string title);
-    Window();
+    inline static void MakeWindow(u_int32_t width, u_int32_t height, std::string title) { m_Instance->MakeWindowImpl(width, height, title); }
+    inline static GLFWwindow* GetWindow() { return m_Instance->GetWindowImpl(); }
 
-    inline GLFWwindow* GetContext() const { return m_Window; }
+protected:
+    virtual void MakeWindowImpl(u_int32_t width, u_int32_t height, std::string title);
+    virtual GLFWwindow* GetWindowImpl();
 
 private:
+    Window() {}
+
     void InitWindow();
 
     int m_Width, m_Height;
     std::string m_Title;
     GLFWwindow* m_Window;
+
+    static Window* m_Instance;
 };

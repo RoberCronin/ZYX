@@ -8,20 +8,19 @@
 #include <cstddef>
 #include <iostream>
 
-Window::Window(u_int32_t width, u_int32_t height, std::string title)
-    : m_Width(width)
-    , m_Height(height)
-    , m_Title(title)
+Window* Window::m_Instance = new Window();
+
+void Window::MakeWindowImpl(u_int32_t width, u_int32_t height, std::string title)
 {
+    m_Width = width;
+    m_Height = height;
+    m_Title = title;
     InitWindow();
 }
 
-Window::Window()
-    : m_Width(1920)
-    , m_Height(1080)
-    , m_Title("window")
+GLFWwindow* Window::GetWindowImpl()
 {
-    InitWindow();
+    return m_Window;
 }
 
 static void glfw_error_callback(int error, const char* description)

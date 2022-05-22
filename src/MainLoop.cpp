@@ -9,7 +9,7 @@
 void MainLoop::run()
 {
     // Create Window
-    Window window(1920, 1080, "www");
+    Window::MakeWindow(1920, 1080, "www");
 
     // imgui
     IMGUI_CHECKVERSION();
@@ -36,10 +36,10 @@ void MainLoop::run()
     }
 
     // init imgui implemtations
-    ImGui_ImplGlfw_InitForOpenGL(window.GetContext(), true);
+    ImGui_ImplGlfw_InitForOpenGL(Window::GetWindow(), true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-    while (!glfwWindowShouldClose(window.GetContext()))
+    while (!glfwWindowShouldClose(Window::GetWindow()))
     {
         // poll events
         glfwPollEvents();
@@ -60,7 +60,7 @@ void MainLoop::run()
         // Rendering
         ImGui::Render();
         int display_w, display_h;
-        glfwGetFramebufferSize(window.GetContext(), &display_w, &display_h);
+        glfwGetFramebufferSize(Window::GetWindow(), &display_w, &display_h);
         glViewport(0, 0, display_w, display_h);
         glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -77,7 +77,7 @@ void MainLoop::run()
             glfwMakeContextCurrent(backup_current_context);
         }
 
-        glfwSwapBuffers(window.GetContext());
+        glfwSwapBuffers(Window::GetWindow());
     }
 
     // Cleanup
@@ -85,7 +85,7 @@ void MainLoop::run()
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    glfwDestroyWindow(window.GetContext());
+    glfwDestroyWindow(Window::GetWindow());
     glfwTerminate();
     glfwSetErrorCallback(NULL);
 }
