@@ -1,9 +1,11 @@
 #include "MainLoop.hpp"
-#include "external/imgui/imgui.h"
+#include "Input.hpp"
 #include "Window.hpp"
+#include "external/imgui/imgui.h"
 #include "external/imgui/imgui_impl_glfw.h"
 #include "external/imgui/imgui_impl_opengl3.h"
 
+#include <GLFW/glfw3.h>
 #include <iostream>
 
 void MainLoop::run()
@@ -52,8 +54,11 @@ void MainLoop::run()
         // imgui windows
         // ImGui::ShowDemoWindow();
         {
-            ImGui::Begin("Hello, world!");
+            ImGui::Begin("Debug");
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+            ImGui::Text("Mouse X: %.1f Mouse Y: %.1f", Input::GetMouseX(), Input::GetMouseY());
+            if (Input::IsKeyPressed(GLFW_KEY_SPACE)) ImGui::Text("Space key is pressed.");
+            else ImGui::Text("Press space key");
             ImGui::End();
         }
 

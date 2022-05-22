@@ -15,6 +15,7 @@ add_executable(${PROJECT_NAME}
 src/main.cpp
 src/Window.cpp
 src/MainLoop.cpp
+src/LinuxInput.cpp
 src/external/imgui/imgui_demo.cpp
 src/external/imgui/imgui_draw.cpp
 src/external/imgui/imgui_impl_glfw.cpp
