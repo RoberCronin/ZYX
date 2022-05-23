@@ -16,6 +16,7 @@ protected:
 
 private:
     Window() {}
+    Window(Window& window) {}
 
     void InitWindow();
 
