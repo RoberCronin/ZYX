@@ -5,6 +5,7 @@
 #include <GL/gl.h>
 #include <GLFW/glfw3.h>
 
+// initialize singleton
 Input* Input::s_Instance = new LinuxInput();
 
 bool LinuxInput::IsKeyPressedImpl(int keycode)
