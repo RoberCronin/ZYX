@@ -1,7 +1,7 @@
 #pragma once
 
-#include <sys/types.h>
 #include <chrono>
+#include <sys/types.h>
 
 class Time
 {

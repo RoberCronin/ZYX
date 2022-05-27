@@ -1,9 +1,11 @@
 #include "MainLoop.hpp"
 #include "Input.hpp"
+#include "Time.hpp"
 #include "Window.hpp"
 #include "external/imgui/imgui.h"
 #include "external/imgui/imgui_impl_glfw.h"
 #include "external/imgui/imgui_impl_opengl3.h"
+#include "Style.hpp"
 
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -26,7 +28,8 @@ void MainLoop::run()
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;     // Enable Docking
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;   // Enable Multi-Viewport / Platform Windows
 
-    ImGui::StyleColorsDark();
+    //ImGui::StyleColorsDark();
+    Style(io);
 
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
@@ -40,6 +43,11 @@ void MainLoop::run()
     // init imgui implemtations
     ImGui_ImplGlfw_InitForOpenGL(Window::GetWindow(), true);
     ImGui_ImplOpenGL3_Init(glsl_version);
+
+    // main loop variables
+    long beginTime = Time::GetTime();
+    long endTime = Time::GetTime();
+    long dt = 0;
 
     while (!glfwWindowShouldClose(Window::GetWindow()))
     {
@@ -57,8 +65,12 @@ void MainLoop::run()
             ImGui::Begin("Debug");
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             ImGui::Text("Mouse X: %.1f Mouse Y: %.1f", Input::GetMouseX(), Input::GetMouseY());
-            if (Input::IsKeyPressed(GLFW_KEY_SPACE)) ImGui::Text("Space key is pressed.");
-            else ImGui::Text("Press space key");
+            if (Input::IsKeyPressed(GLFW_KEY_A))
+                ImGui::Text("A is being pressed");
+            else
+                ImGui::Text("A");
+
+            ImGui::Text("Current frame time: %ld", dt);
             ImGui::End();
         }
 
@@ -83,6 +95,10 @@ void MainLoop::run()
         }
 
         glfwSwapBuffers(Window::GetWindow());
+
+        endTime = Time::GetTime();
+        dt = endTime - beginTime;
+        beginTime = endTime;
     }
 
     // Cleanup
