@@ -1,4 +1,4 @@
-#include "external/imgui/imgui.h"
+#include "imgui/imgui.h"
 
 void Style(const ImGuiIO& io)
 {

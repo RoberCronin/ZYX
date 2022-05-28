@@ -8,7 +8,8 @@ project(${PROJECT_NAME} VERSION 1.0.0)
 link_directories(${CMAKE_BINARY_DIR})
 
 include_directories(
-
+    src/
+    external/
 )
 
 add_executable(${PROJECT_NAME}
@@ -17,13 +18,13 @@ src/Window.cpp
 src/MainLoop.cpp
 src/LinuxInput.cpp
 src/Time.cpp
-src/external/imgui/imgui_demo.cpp
-src/external/imgui/imgui_draw.cpp
-src/external/imgui/imgui_impl_glfw.cpp
-src/external/imgui/imgui_impl_opengl3.cpp
-src/external/imgui/imgui_tables.cpp
-src/external/imgui/imgui_widgets.cpp
-src/external/imgui/imgui.cpp
+external/imgui/imgui_demo.cpp
+external/imgui/imgui_draw.cpp
+external/imgui/imgui_impl_glfw.cpp
+external/imgui/imgui_impl_opengl3.cpp
+external/imgui/imgui_tables.cpp
+external/imgui/imgui_widgets.cpp
+external/imgui/imgui.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
