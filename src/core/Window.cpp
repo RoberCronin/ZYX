@@ -3,7 +3,6 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "imgui/imgui_internal.h"
 
-#include <GL/gl.h>
 #include <GLFW/glfw3.h>
 #include <cstddef>
 #include <iostream>
@@ -52,4 +51,7 @@ void Window::InitWindow()
 
     // enable vsync
     glfwSwapInterval(1);
+
+    // initialize glew
+    if (glewInit() != GLEW_OK) std::cout << "glewInit() Failed" << std::endl;
 }

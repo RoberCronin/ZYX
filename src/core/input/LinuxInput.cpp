@@ -2,9 +2,6 @@
 
 #include "core/Window.hpp"
 
-#include <GL/gl.h>
-#include <GLFW/glfw3.h>
-
 #ifdef __linux__
 
 // initialize singleton

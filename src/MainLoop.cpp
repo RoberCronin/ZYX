@@ -1,5 +1,6 @@
 #include "MainLoop.hpp"
 #include "Style.hpp"
+#include "core/Shader.hpp"
 #include "core/Time.hpp"
 #include "core/Window.hpp"
 #include "core/input/Input.hpp"
@@ -14,6 +15,10 @@ void MainLoop::run()
 {
     // Create Window
     Window::MakeWindow(1920, 1080, "www");
+
+    // create shader
+    Shader shader("res/shaders/default");
+    shader.Bind();
 
     // imgui
     IMGUI_CHECKVERSION();
