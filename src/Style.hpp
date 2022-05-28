@@ -3,7 +3,7 @@
 void Style(const ImGuiIO& io)
 {
 
-    io.Fonts->AddFontFromFileTTF("res/OpenSans-VariableFont_wdth,wght.ttf", 20.0f);
+    io.Fonts->AddFontFromFileTTF("res/fonts/OpenSans-VariableFont_wdth,wght.ttf", 20.0f);
     ImGui::GetStyle().FrameRounding = 4.0f;
     ImGui::GetStyle().GrabRounding = 4.0f;
 
