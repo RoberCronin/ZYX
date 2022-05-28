@@ -1,11 +1,11 @@
 #include "MainLoop.hpp"
-#include "Input.hpp"
-#include "Time.hpp"
-#include "Window.hpp"
+#include "Style.hpp"
+#include "core/Time.hpp"
+#include "core/Window.hpp"
+#include "core/input/Input.hpp"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
-#include "Style.hpp"
 
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -28,7 +28,7 @@ void MainLoop::run()
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;     // Enable Docking
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;   // Enable Multi-Viewport / Platform Windows
 
-    //ImGui::StyleColorsDark();
+    // ImGui::StyleColorsDark();
     Style(io);
 
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);

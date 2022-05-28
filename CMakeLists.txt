@@ -14,10 +14,10 @@ include_directories(
 
 add_executable(${PROJECT_NAME}
 src/main.cpp
-src/Window.cpp
+src/core/Window.cpp
 src/MainLoop.cpp
-src/LinuxInput.cpp
-src/Time.cpp
+src/core/input/LinuxInput.cpp
+src/core/Time.cpp
 external/imgui/imgui_demo.cpp
 external/imgui/imgui_draw.cpp
 external/imgui/imgui_impl_glfw.cpp
