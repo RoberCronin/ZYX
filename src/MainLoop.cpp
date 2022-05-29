@@ -8,17 +8,62 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
+#include <GL/gl.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
 
 void MainLoop::run()
 {
     // Create Window
-    Window::MakeWindow(1920, 1080, "www");
+    Window::MakeWindow(600, 600, "www");
 
     // create shader
     Shader shader("res/shaders/default");
     shader.Bind();
+
+    // create square
+    float vertexArray[] = {
+        // position         // color
+        -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, // bottom left
+        0.5f,  -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, // bottom right
+        0.5f,  0.5,   0.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
+        -0.5f, 0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 1.0f, // top left
+    };
+
+    // counter-clockwise order
+    unsigned int elementArray[] = {
+        0, 1, 2, // top right tri
+        0, 2, 3, // bottom left tri
+    };
+
+    // create vao
+    GLuint vaoID;
+    glGenVertexArrays(1, &vaoID);
+    glBindVertexArray(vaoID);
+
+    // create vbo buffer
+    GLuint vboID;
+    glGenBuffers(1, &vboID);
+    glBindBuffer(GL_ARRAY_BUFFER, vboID);
+    // upload verticies
+    glBufferData(GL_ARRAY_BUFFER, 28 * sizeof(float), vertexArray, GL_STATIC_DRAW);
+
+    // create the ebo buffer
+    GLuint eboID;
+    glGenBuffers(1, &eboID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
+    // upload indicies
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), elementArray, GL_STATIC_DRAW);
+
+    // size of each attribute
+    int positionsSize = 3;
+    int colorSize = 4;
+    int vertexSize = (positionsSize + colorSize) * sizeof(float);
+
+    // position
+    glVertexAttribPointer(0, positionsSize, GL_FLOAT, GL_FALSE, vertexSize, (const void*)0);
+    // color
+    glVertexAttribPointer(1, colorSize, GL_FLOAT, GL_FALSE, vertexSize, (const void*)(positionsSize * sizeof(float)));
 
     // imgui
     IMGUI_CHECKVERSION();
@@ -31,7 +76,7 @@ void MainLoop::run()
     // set imgui flags
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;     // Enable Docking
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;   // Enable Multi-Viewport / Platform Windows
+    // io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;   // Enable Multi-Viewport / Platform Windows
 
     // ImGui::StyleColorsDark();
     Style(io);
@@ -80,13 +125,32 @@ void MainLoop::run()
         }
 
         // Rendering
+
+        // imgui pre-rendering step
         ImGui::Render();
+
+        // clear screen
         int display_w, display_h;
         glfwGetFramebufferSize(Window::GetWindow(), &display_w, &display_h);
         glViewport(0, 0, display_w, display_h);
         glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        // binding and enabling
+        shader.Bind();                // bind shader
+        glBindVertexArray(vaoID);     // bind vao
+        glEnableVertexAttribArray(0); // enable positions
+        glEnableVertexAttribArray(1); // enable colors
+
+        // draw calls
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        // unbinding and disabling
+        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
+        glBindVertexArray(0);
+        shader.UnBind();
 
         // Update and Render additional Platform Windows
         // (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
@@ -99,6 +163,7 @@ void MainLoop::run()
             glfwMakeContextCurrent(backup_current_context);
         }
 
+        // swap buffers
         glfwSwapBuffers(Window::GetWindow());
 
         endTime = Time::GetTime();
