@@ -20,7 +20,7 @@
 void MainLoop::run()
 {
     // Create Window
-    Window::MakeWindow(600, 600, "www");
+    Window::MakeWindow(1280, 720, "www");
 
     // load logo
     GLFWimage logo[1];
