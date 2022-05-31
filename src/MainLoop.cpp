@@ -1,15 +1,17 @@
 #include "MainLoop.hpp"
 #include "Style.hpp"
-#include "core/Shader.hpp"
+#include "core/Camera.hpp"
 #include "core/Time.hpp"
 #include "core/Window.hpp"
 #include "core/input/Input.hpp"
+#include "core/renderer/Shader.hpp"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
 #include <GL/gl.h>
 #include <GLFW/glfw3.h>
+#include <glm/fwd.hpp>
 #include <iostream>
 
 void MainLoop::run()
@@ -21,13 +23,16 @@ void MainLoop::run()
     Shader shader("res/shaders/default");
     shader.Bind();
 
+    // create camera
+    Camera camera((glm::vec2()));
+
     // create square
     float vertexArray[] = {
         // position         // color
-        -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, // bottom left
-        0.5f,  -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, // bottom right
-        0.5f,  0.5,   0.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
-        -0.5f, 0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 1.0f, // top left
+        0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, // bottom left
+        100.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, // bottom right
+        100.5f,  100.5,   0.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
+        0.5f, 100.5f,  0.0f, 0.0f, 1.0f, 0.0f, 1.0f, // top left
     };
 
     // counter-clockwise order
@@ -111,10 +116,12 @@ void MainLoop::run()
 
         // imgui windows
         // ImGui::ShowDemoWindow();
+        glm::vec4 location = (camera.getProjectionMatrix() * camera.getViewMatrix()) * glm::vec4(100.5f,  100.5,   0.0f, 1.0); 
         {
             ImGui::Begin("Debug");
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             ImGui::Text("Mouse X: %.1f Mouse Y: %.1f", Input::GetMouseX(), Input::GetMouseY());
+            ImGui::Text("x1: %.3f     y1: %.3f     z1: %.3f     w1: %.3f", location.x, location.y, location.z, location.w);
             if (Input::IsKeyPressed(GLFW_KEY_A))
                 ImGui::Text("A is being pressed");
             else
@@ -135,6 +142,9 @@ void MainLoop::run()
         glViewport(0, 0, display_w, display_h);
         glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        shader.SetUniformMat4f("uProjection", camera.getProjectionMatrix());
+        shader.SetUniformMat4f("uView", camera.getViewMatrix());
 
         // binding and enabling
         shader.Bind();                // bind shader
