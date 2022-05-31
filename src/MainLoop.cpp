@@ -9,6 +9,9 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image/stb_image.h"
+
 #include <GL/gl.h>
 #include <GLFW/glfw3.h>
 #include <glm/fwd.hpp>
@@ -18,6 +21,16 @@ void MainLoop::run()
 {
     // Create Window
     Window::MakeWindow(600, 600, "www");
+
+    // load logo
+    GLFWimage logo[1];
+    logo[0].pixels = stbi_load("res/textures/logo.png", &logo[0].width, &logo[0].height, 0, 4);
+
+    // set icon to logo
+    glfwSetWindowIcon(Window::GetWindow(), 1, logo);
+
+    // free image memory
+    stbi_image_free(logo[0].pixels);
 
     // create shader
     Shader shader("res/shaders/default");
@@ -29,10 +42,10 @@ void MainLoop::run()
     // create square
     float vertexArray[] = {
         // position         // color
-        0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, // bottom left
-        100.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, // bottom right
-        100.5f,  100.5,   0.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
-        0.5f, 100.5f,  0.0f, 0.0f, 1.0f, 0.0f, 1.0f, // top left
+        0.5f,   0.5f,   0.0f, 1.0f, 1.0f, 0.0f, 1.0f, // bottom left
+        100.5f, 0.5f,   0.0f, 1.0f, 0.0f, 0.0f, 1.0f, // bottom right
+        100.5f, 100.5,  0.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
+        0.5f,   100.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, // top left
     };
 
     // counter-clockwise order
@@ -116,7 +129,7 @@ void MainLoop::run()
 
         // imgui windows
         // ImGui::ShowDemoWindow();
-        glm::vec4 location = (camera.getProjectionMatrix() * camera.getViewMatrix()) * glm::vec4(100.5f,  100.5,   0.0f, 1.0); 
+        glm::vec4 location = (camera.getProjectionMatrix() * camera.getViewMatrix()) * glm::vec4(100.5f, 100.5, 0.0f, 1.0);
         {
             ImGui::Begin("Debug");
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
