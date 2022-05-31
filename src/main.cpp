@@ -8,17 +8,6 @@
 
 int main()
 {
-    glm::mat4 matrix;
-
-    matrix = glm::mat4(1.0f);
-    for (int i = 0; i < 4; i++)
-    {
-        for (int j = 0; j < 4; j++)
-        {
-            std::cout << matrix[i][j];
-        }
-        std::cout << std::endl;
-    }
     MainLoop::run();
     return 0;
 }
