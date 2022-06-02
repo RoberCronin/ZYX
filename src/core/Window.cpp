@@ -1,7 +1,4 @@
-#include "Window.hpp"
-#include "imgui/imgui_impl_glfw.h"
-#include "imgui/imgui_impl_opengl3.h"
-#include "imgui/imgui_internal.h"
+#include "core/include.hpp"
 
 #include <GLFW/glfw3.h>
 #include <cstddef>

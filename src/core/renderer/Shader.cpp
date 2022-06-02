@@ -1,8 +1,5 @@
-#include "core/Debug.hpp"
+#include "core/include.hpp"
 
-#include "Shader.hpp"
-
-#include <GL/glew.h>
 #include <fstream>
 #include <iostream>
 

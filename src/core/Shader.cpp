@@ -1,4 +1,4 @@
-#include "Shader.hpp"
+#include "core/include.hpp"
 
 #include <GL/glew.h>
 #include <fstream>

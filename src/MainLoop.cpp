@@ -1,14 +1,7 @@
 #include "MainLoop.hpp"
 #include "Style.hpp"
-#include "core/Camera.hpp"
-#include "core/Debug.hpp"
-#include "core/Time.hpp"
-#include "core/Window.hpp"
-#include "core/input/Input.hpp"
-#include "core/renderer/Shader.hpp"
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_glfw.h"
-#include "imgui/imgui_impl_opengl3.h"
+
+#include "core/include.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image/stb_image.h"
