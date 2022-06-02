@@ -1,6 +1,7 @@
 #include "MainLoop.hpp"
 #include "Style.hpp"
 #include "core/Camera.hpp"
+#include "core/Debug.hpp"
 #include "core/Time.hpp"
 #include "core/Window.hpp"
 #include "core/input/Input.hpp"
@@ -33,7 +34,7 @@ void MainLoop::run()
     stbi_image_free(logo[0].pixels);
 
     // create shader
-    Shader shader("res/shaders/default");
+    Shader shader("res/shaders/default", Window::GetWindow());
     shader.Bind();
 
     // create camera
@@ -56,22 +57,22 @@ void MainLoop::run()
 
     // create vao
     GLuint vaoID;
-    glGenVertexArrays(1, &vaoID);
-    glBindVertexArray(vaoID);
+    GLCall(glGenVertexArrays(1, &vaoID));
+    GLCall(glBindVertexArray(vaoID));
 
     // create vbo buffer
     GLuint vboID;
-    glGenBuffers(1, &vboID);
-    glBindBuffer(GL_ARRAY_BUFFER, vboID);
+    GLCall(glGenBuffers(1, &vboID));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, vboID));
     // upload verticies
-    glBufferData(GL_ARRAY_BUFFER, 28 * sizeof(float), vertexArray, GL_STATIC_DRAW);
+    GLCall(glBufferData(GL_ARRAY_BUFFER, 28 * sizeof(float), vertexArray, GL_STATIC_DRAW));
 
     // create the ebo buffer
     GLuint eboID;
-    glGenBuffers(1, &eboID);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
+    GLCall(glGenBuffers(1, &eboID));
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID));
     // upload indicies
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), elementArray, GL_STATIC_DRAW);
+    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), elementArray, GL_STATIC_DRAW));
 
     // size of each attribute
     int positionsSize = 3;
@@ -79,9 +80,9 @@ void MainLoop::run()
     int vertexSize = (positionsSize + colorSize) * sizeof(float);
 
     // position
-    glVertexAttribPointer(0, positionsSize, GL_FLOAT, GL_FALSE, vertexSize, (const void*)0);
+    GLCall(glVertexAttribPointer(0, positionsSize, GL_FLOAT, GL_FALSE, vertexSize, (const void*)0));
     // color
-    glVertexAttribPointer(1, colorSize, GL_FLOAT, GL_FALSE, vertexSize, (const void*)(positionsSize * sizeof(float)));
+    GLCall(glVertexAttribPointer(1, colorSize, GL_FLOAT, GL_FALSE, vertexSize, (const void*)(positionsSize * sizeof(float))));
 
     // imgui
     IMGUI_CHECKVERSION();
@@ -116,11 +117,18 @@ void MainLoop::run()
     long beginTime = Time::GetTime();
     long endTime = Time::GetTime();
     long dt = 0;
+    int counter = 0.0f;
 
     while (!glfwWindowShouldClose(Window::GetWindow()))
     {
-        // poll events
+        //  poll events
         glfwPollEvents();
+
+        // input
+        if (Input::IsKeyPressed(GLFW_KEY_A)) camera.MoveX(-10.0f);
+        if (Input::IsKeyPressed(GLFW_KEY_D)) camera.MoveX(10.0f);
+        if (Input::IsKeyPressed(GLFW_KEY_W)) camera.MoveY(10.0f);
+        if (Input::IsKeyPressed(GLFW_KEY_S)) camera.MoveY(-10.0f);
 
         // Start imgui frame
         ImGui_ImplOpenGL3_NewFrame();
@@ -152,27 +160,29 @@ void MainLoop::run()
         // clear screen
         int display_w, display_h;
         glfwGetFramebufferSize(Window::GetWindow(), &display_w, &display_h);
-        glViewport(0, 0, display_w, display_h);
-        glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
-        glClear(GL_COLOR_BUFFER_BIT);
+        GLCall(glViewport(0, 0, display_w, display_h));
+        GLCall(glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w));
+        GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
-        shader.SetUniformMat4f("uProjection", camera.getProjectionMatrix());
-        shader.SetUniformMat4f("uView", camera.getViewMatrix());
+        // update uniforms
+        shader.Bind(); // have to bind shader before setting uniforms
+        shader.SetUniformMat4fv("uProjection", camera.getProjectionMatrix());
+        shader.SetUniformMat4fv("uView", camera.getViewMatrix());
 
         // binding and enabling
-        shader.Bind();                // bind shader
-        glBindVertexArray(vaoID);     // bind vao
-        glEnableVertexAttribArray(0); // enable positions
-        glEnableVertexAttribArray(1); // enable colors
+        shader.Bind();                        // bind shader
+        GLCall(glBindVertexArray(vaoID));     // bind vao
+        GLCall(glEnableVertexAttribArray(0)); // enable positions
+        GLCall(glEnableVertexAttribArray(1)); // enable colors
 
         // draw calls
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         // unbinding and disabling
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-        glBindVertexArray(0);
+        GLCall(glDisableVertexAttribArray(0));
+        GLCall(glDisableVertexAttribArray(1));
+        GLCall(glBindVertexArray(0));
         shader.UnBind();
 
         // Update and Render additional Platform Windows
@@ -192,6 +202,7 @@ void MainLoop::run()
         endTime = Time::GetTime();
         dt = endTime - beginTime;
         beginTime = endTime;
+        counter += 1;
     }
 
     // Cleanup

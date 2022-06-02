@@ -1,20 +1,23 @@
 #pragma once
 
-#include <string>
+#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+#include <string>
 
 class Shader
 {
 public:
-    Shader(const std::string& filepath);
+    Shader(const std::string& filepath, GLFWwindow* window);
 
     void Bind();
     void UnBind();
 
+    unsigned int GetRendererID() { return m_RendererID; }
+
     void SetUniform1i(const std::string& name, int value);
     void SetUniform2f(const std::string& name, float v0, float v1);
     void SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3);
-    void SetUniformMat4f(const std::string& name, const glm::mat4 matrix);
+    void SetUniformMat4fv(const std::string& name, const glm::mat4& matrix);
 
 private:
     // compiles, links, and returns the program id, to be stored in m_RendererID
@@ -29,5 +32,6 @@ private:
 
     std::string m_FilePath;
     unsigned int m_RendererID;
+    GLFWwindow* m_Window;
     Shader(const Shader& other) {}
 };

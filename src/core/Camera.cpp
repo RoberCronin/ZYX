@@ -26,3 +26,13 @@ glm::mat4 Camera::getViewMatrix()
 
     return m_ViewMatrix;
 }
+
+void Camera::MoveX(const float& moveDelta)
+{
+    m_Position.x += moveDelta;
+}
+
+void Camera::MoveY(const float& moveDelta)
+{
+    m_Position.y += moveDelta;
+}
