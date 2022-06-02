@@ -9,16 +9,22 @@ Shader::Shader(const std::string& filepath, GLFWwindow* window)
     , m_Window(window)
 {
     // links and compiles the shaders
+    m_Bound = false;
     m_RendererID = CreateShader();
 }
 
 void Shader::Bind()
 {
-    glUseProgram(m_RendererID);
+    if (!m_Bound)
+    {
+        glUseProgram(m_RendererID);
+        m_Bound = true;
+    }
 }
 
 void Shader::UnBind()
 {
+    m_Bound = false;
     glUseProgram(0);
 }
 

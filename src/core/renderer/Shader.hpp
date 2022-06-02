@@ -42,5 +42,6 @@ private:
     std::string m_FilePath;
     unsigned int m_RendererID;
     GLFWwindow* m_Window;
+    bool m_Bound;
     Shader(const Shader& other) {}
 };
