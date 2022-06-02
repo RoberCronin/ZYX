@@ -1,3 +1,4 @@
+#include "core/Window.hpp"
 #include "core/include.hpp"
 
 #include <GLFW/glfw3.h>
@@ -8,15 +9,22 @@ Window* Window::m_Instance = new Window();
 
 void Window::MakeWindowImpl(u_int32_t width, u_int32_t height, std::string title)
 {
-    m_Width = width;
-    m_Height = height;
-    m_Title = title;
-    InitWindow();
+    if (!m_WindowCreated)
+    {
+        m_Width = width;
+        m_Height = height;
+        m_Title = title;
+        m_WindowCreated = true;
+        InitWindow();
+    }
 }
 
 GLFWwindow* Window::GetWindowImpl()
 {
-    return m_Window;
+    if (m_WindowCreated)
+        return m_Window;
+    else
+        return nullptr;
 }
 
 static void glfw_error_callback(int error, const char* description)

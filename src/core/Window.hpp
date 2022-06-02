@@ -19,13 +19,14 @@ protected:
 
 private:
     Window() {}
-    Window(Window& window) {}
+    Window(Window& window) { m_WindowCreated = false; }
 
     void InitWindow();
 
     int m_Width, m_Height;
     std::string m_Title;
     GLFWwindow* m_Window;
+    bool m_WindowCreated;
 
     static Window* m_Instance;
 };
