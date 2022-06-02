@@ -14,9 +14,18 @@ public:
 
     unsigned int GetRendererID() { return m_RendererID; }
 
+    // single number uniforms
     void SetUniform1i(const std::string& name, int value);
+    void SetUniform1f(const std::string& name, float value);
+
+    // float vector uniforms
     void SetUniform2f(const std::string& name, float v0, float v1);
+    void SetUniform3f(const std::string& name, float v0, float v1, float v2);
     void SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3);
+
+    // matrix uniforms
+    void SetUniformMat2fv(const std::string& name, const glm::mat2& matrix);
+    void SetUniformMat3fv(const std::string& name, const glm::mat3& matrix);
     void SetUniformMat4fv(const std::string& name, const glm::mat4& matrix);
 
 private:
