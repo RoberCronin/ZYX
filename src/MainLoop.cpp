@@ -3,9 +3,6 @@
 
 #include "core/include.hpp"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image/stb_image.h"
-
 #include <GL/gl.h>
 #include <GLFW/glfw3.h>
 #include <glm/fwd.hpp>
@@ -14,11 +11,20 @@
 void MainLoop::run()
 {
     // Create Window
-    Window::MakeWindow(1280, 720, "www");
+    Window::MakeWindow(1280, 720, "ZYX");
+
+    // create shader
+    Shader shader("res/shaders/default", Window::GetWindow());
+    shader.Bind();
 
     // load logo
     GLFWimage logo[1];
     logo[0].pixels = stbi_load("res/textures/logo.png", &logo[0].width, &logo[0].height, 0, 4);
+
+    // load texture
+    Texture texture("res/textures/logo.png");
+    shader.SetTexture("TEX_SAMPLER", 0);
+    texture.Bind();
 
     // set icon to logo
     glfwSetWindowIcon(Window::GetWindow(), 1, logo);
@@ -26,20 +32,16 @@ void MainLoop::run()
     // free image memory
     stbi_image_free(logo[0].pixels);
 
-    // create shader
-    Shader shader("res/shaders/default", Window::GetWindow());
-    shader.Bind();
-
     // create camera
     Camera camera((glm::vec2()));
 
     // create square
     float vertexArray[] = {
-        // position         // color
-        0.5f,   0.5f,   0.0f, 1.0f, 1.0f, 0.0f, 1.0f, // bottom left
-        100.5f, 0.5f,   0.0f, 1.0f, 0.0f, 0.0f, 1.0f, // bottom right
-        100.5f, 100.5,  0.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
-        0.5f,   100.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, // top left
+        // position           // color                // UV coordinates
+        0.5f,   0.5f,   0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
+        100.5f, 0.5f,   0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, // bottom right
+        100.5f, 100.5,  0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, // top right
+        0.5f,   100.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, // top left
     };
 
     // counter-clockwise order
@@ -58,7 +60,7 @@ void MainLoop::run()
     GLCall(glGenBuffers(1, &vboID));
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, vboID));
     // upload verticies
-    GLCall(glBufferData(GL_ARRAY_BUFFER, 28 * sizeof(float), vertexArray, GL_STATIC_DRAW));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, 36 * sizeof(float), vertexArray, GL_STATIC_DRAW));
 
     // create the ebo buffer
     GLuint eboID;
@@ -70,12 +72,19 @@ void MainLoop::run()
     // size of each attribute
     int positionsSize = 3;
     int colorSize = 4;
-    int vertexSize = (positionsSize + colorSize) * sizeof(float);
+    int uvSize = 2;
+    int vertexSize = (positionsSize + colorSize + uvSize) * sizeof(float);
 
     // position
     GLCall(glVertexAttribPointer(0, positionsSize, GL_FLOAT, GL_FALSE, vertexSize, (const void*)0));
+    GLCall(glEnableVertexAttribArray(0));
     // color
     GLCall(glVertexAttribPointer(1, colorSize, GL_FLOAT, GL_FALSE, vertexSize, (const void*)(positionsSize * sizeof(float))));
+    GLCall(glEnableVertexAttribArray(1));
+
+    // uv coordinates
+    GLCall(glVertexAttribPointer(2, uvSize, GL_FLOAT, GL_FALSE, vertexSize, (const void*)((positionsSize + colorSize) * sizeof(float))));
+    GLCall(glEnableVertexAttribArray(2));
 
     // imgui
     IMGUI_CHECKVERSION();
@@ -110,7 +119,9 @@ void MainLoop::run()
     long beginTime = Time::GetTime();
     long endTime = Time::GetTime();
     long dt = 0;
-    int counter = 0.0f;
+
+    const float yMoveDelta = 720.0 / 100.0;
+    const float xMoveDelta = 1280.0 / 100.0;
 
     while (!glfwWindowShouldClose(Window::GetWindow()))
     {
@@ -118,10 +129,10 @@ void MainLoop::run()
         glfwPollEvents();
 
         // input
-        if (Input::IsKeyPressed(GLFW_KEY_A)) camera.MoveX(-10.0f);
-        if (Input::IsKeyPressed(GLFW_KEY_D)) camera.MoveX(10.0f);
-        if (Input::IsKeyPressed(GLFW_KEY_W)) camera.MoveY(10.0f);
-        if (Input::IsKeyPressed(GLFW_KEY_S)) camera.MoveY(-10.0f);
+        if (Input::IsKeyPressed(GLFW_KEY_A)) camera.MoveX(-(xMoveDelta * ((float)dt / 50000.0f)));
+        if (Input::IsKeyPressed(GLFW_KEY_D)) camera.MoveX((xMoveDelta * ((float)dt / 50000.0f)));
+        if (Input::IsKeyPressed(GLFW_KEY_W)) camera.MoveY((yMoveDelta * ((float)dt / 50000.0f)));
+        if (Input::IsKeyPressed(GLFW_KEY_S)) camera.MoveY(-(yMoveDelta * ((float)dt / 50000.0f)));
 
         // Start imgui frame
         ImGui_ImplOpenGL3_NewFrame();
@@ -195,7 +206,6 @@ void MainLoop::run()
         endTime = Time::GetTime();
         dt = endTime - beginTime;
         beginTime = endTime;
-        counter += 1;
     }
 
     // Cleanup

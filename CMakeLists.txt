@@ -20,6 +20,9 @@ src/core/input/LinuxInput.cpp
 src/core/Time.cpp
 src/core/renderer/Shader.cpp
 src/core/Camera.cpp
+src/core/Texture.cpp
+
+external/stb_image/stb_image.cpp
 external/imgui/imgui_demo.cpp
 external/imgui/imgui_draw.cpp
 external/imgui/imgui_impl_glfw.cpp

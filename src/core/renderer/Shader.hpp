@@ -12,7 +12,7 @@ public:
     void Bind();
     void UnBind();
 
-    unsigned int GetRendererID() { return m_RendererID; }
+    unsigned int* GetRendererID() { return &m_RendererID; }
 
     // single number uniforms
     void SetUniform1i(const std::string& name, int value);
@@ -27,6 +27,8 @@ public:
     void SetUniformMat2fv(const std::string& name, const glm::mat2& matrix);
     void SetUniformMat3fv(const std::string& name, const glm::mat3& matrix);
     void SetUniformMat4fv(const std::string& name, const glm::mat4& matrix);
+
+    void SetTexture(std::string name, int slot);
 
 private:
     // compiles, links, and returns the program id, to be stored in m_RendererID

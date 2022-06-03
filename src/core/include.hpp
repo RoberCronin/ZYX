@@ -12,8 +12,10 @@
 #include "core/Window.hpp"
 #include "core/input/Input.hpp"
 #include "core/renderer/Shader.hpp"
+#include "core/Texture.hpp"
 
 // External libraries
+#include "stb_image/stb_image.h"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
