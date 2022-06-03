@@ -6,7 +6,7 @@
 class Camera
 {
 public:
-    Camera(glm::vec2 position);
+    Camera(glm::vec2 position, unsigned int screenSpaceWidth, unsigned int screenSpacHeight);
 
     void adjustProjection();
     glm::mat4 getViewMatrix();
@@ -19,4 +19,6 @@ private:
     glm::vec2 m_Position;
     glm::mat4 m_ProjectionMatrix;
     glm::mat4 m_ViewMatrix;
+
+    unsigned int m_ScreenSpaceWidth, m_ScreenSpacHeight;
 };

@@ -3,10 +3,12 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/fwd.hpp>
 
-Camera::Camera(glm::vec2 position)
+Camera::Camera(glm::vec2 position, unsigned int screenSpaceWidth, unsigned int screenSpacHeight)
     : m_Position(position)
     , m_ProjectionMatrix(glm::mat4())
     , m_ViewMatrix(glm::mat4())
+    , m_ScreenSpaceWidth(screenSpaceWidth)
+    , m_ScreenSpacHeight(screenSpacHeight)
 {
     adjustProjection();
 }
@@ -14,7 +16,7 @@ Camera::Camera(glm::vec2 position)
 void Camera::adjustProjection()
 {
     m_ProjectionMatrix = glm::mat4(1.0f);
-    m_ProjectionMatrix *= glm::ortho(0.0f, 32.0f * 40.0f, 0.0f, 32.0f * 21.0f, 0.0f, 100.0f);
+    m_ProjectionMatrix *= glm::ortho(0.0f, (float)m_ScreenSpaceWidth, 0.0f, (float)m_ScreenSpacHeight, 0.0f, 100.0f);
 }
 
 glm::mat4 Camera::getViewMatrix()
