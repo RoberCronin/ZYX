@@ -126,6 +126,7 @@ void MainLoop::run()
     long frameTimeEnd = Time::GetTime();
     long frameTime;
     long dt = 0;
+    float frameRate = 60.0f;
 
     const float yMoveDelta = 720.0 / 100.0;
     const float xMoveDelta = 1280.0 / 100.0;
@@ -162,6 +163,7 @@ void MainLoop::run()
         glm::vec4 location = (camera.getProjectionMatrix() * camera.getViewMatrix()) * glm::vec4(100.5f, 100.5, 0.0f, 1.0);
         {
             ImGui::Begin("Debug");
+            ImGui::SliderFloat("Framerate", &frameRate, 1.0f, 200.0f);
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             ImGui::Text("Mouse X: %.1f Mouse Y: %.1f", Input::GetMouseX(), Input::GetMouseY());
             ImGui::Text("x1: %.3f     y1: %.3f     z1: %.3f     w1: %.3f", location.x, location.y, location.z, location.w);
@@ -170,7 +172,7 @@ void MainLoop::run()
             else
                 ImGui::Text("A");
 
-            ImGui::Text("Current frame time: %ld", dt);
+            ImGui::Text("Current frame time: %ld", frameTime);
             ImGui::End();
         }
 
@@ -235,7 +237,7 @@ void MainLoop::run()
         dt = endTime - beginTime;
         beginTime = endTime;
 
-        Framerate::Sleep(60.0f, frameTime);
+        Framerate::Sleep(frameRate, frameTime);
     }
 
     // Cleanup
