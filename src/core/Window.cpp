@@ -54,8 +54,8 @@ void Window::InitWindow()
     // make the OpenGL context current
     glfwMakeContextCurrent(m_Window);
 
-    // enable vsync
-    glfwSwapInterval(1);
+    // no frame limiter
+    glfwSwapInterval(0);
 
     // initialize glew
     if (glewInit() != GLEW_OK) std::cout << "glewInit() Failed" << std::endl;

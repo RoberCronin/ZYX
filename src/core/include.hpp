@@ -13,6 +13,7 @@
 #include "core/input/Input.hpp"
 #include "core/renderer/Shader.hpp"
 #include "core/Texture.hpp"
+#include "core/renderer/Framerate.hpp"
 
 // External libraries
 #include "stb_image/stb_image.h"

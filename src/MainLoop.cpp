@@ -2,6 +2,8 @@
 #include "Style.hpp"
 
 #include "core/include.hpp"
+#include "core/input/Input.hpp"
+#include "core/renderer/Framerate.hpp"
 
 #include <GL/gl.h>
 #include <GLFW/glfw3.h>
@@ -11,7 +13,9 @@
 void MainLoop::run()
 {
     // Create Window
-    Window::MakeWindow(1280, 720, "ZYX");
+    const unsigned int ScreenWidth = 1280;
+    const unsigned int ScreenHeight = 720;
+    Window::MakeWindow(ScreenWidth, ScreenHeight, "ZYX");
 
     // create shader
     Shader shader("res/shaders/default", Window::GetWindow());
@@ -22,7 +26,7 @@ void MainLoop::run()
     logo[0].pixels = stbi_load("res/textures/logo.png", &logo[0].width, &logo[0].height, 0, 4);
 
     // load texture
-    Texture texture("res/textures/logo.png");
+    Texture texture("res/textures/testTexture.png");
     shader.SetTexture("TEX_SAMPLER", 0);
     texture.Bind();
 
@@ -33,7 +37,7 @@ void MainLoop::run()
     stbi_image_free(logo[0].pixels);
 
     // create camera
-    Camera camera((glm::vec2()));
+    Camera camera((glm::vec2()), ScreenWidth, ScreenHeight);
 
     // create square
     float vertexArray[] = {
@@ -60,14 +64,14 @@ void MainLoop::run()
     GLCall(glGenBuffers(1, &vboID));
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, vboID));
     // upload verticies
-    GLCall(glBufferData(GL_ARRAY_BUFFER, 36 * sizeof(float), vertexArray, GL_STATIC_DRAW));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, 36 * sizeof(float), vertexArray, GL_DYNAMIC_DRAW));
 
     // create the ebo buffer
     GLuint eboID;
     GLCall(glGenBuffers(1, &eboID));
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID));
     // upload indicies
-    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), elementArray, GL_STATIC_DRAW));
+    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), elementArray, GL_DYNAMIC_DRAW));
 
     // size of each attribute
     int positionsSize = 3;
@@ -118,6 +122,9 @@ void MainLoop::run()
     // main loop variables
     long beginTime = Time::GetTime();
     long endTime = Time::GetTime();
+    long frameTimeStart = Time::GetTime();
+    long frameTimeEnd = Time::GetTime();
+    long frameTime;
     long dt = 0;
 
     const float yMoveDelta = 720.0 / 100.0;
@@ -125,14 +132,25 @@ void MainLoop::run()
 
     while (!glfwWindowShouldClose(Window::GetWindow()))
     {
+        // start frame time timer
+        long frameTimeStart = Time::GetTime();
+
         //  poll events
         glfwPollEvents();
 
         // input
-        if (Input::IsKeyPressed(GLFW_KEY_A)) camera.MoveX(-(xMoveDelta * ((float)dt / 50000.0f)));
-        if (Input::IsKeyPressed(GLFW_KEY_D)) camera.MoveX((xMoveDelta * ((float)dt / 50000.0f)));
-        if (Input::IsKeyPressed(GLFW_KEY_W)) camera.MoveY((yMoveDelta * ((float)dt / 50000.0f)));
-        if (Input::IsKeyPressed(GLFW_KEY_S)) camera.MoveY(-(yMoveDelta * ((float)dt / 50000.0f)));
+        if (Input::IsKeyPressed(GLFW_KEY_A)) vertexArray[18] += -(xMoveDelta * ((float)dt / 50000.0f));
+        if (Input::IsKeyPressed(GLFW_KEY_D)) vertexArray[18] += (xMoveDelta * ((float)dt / 50000.0f));
+        if (Input::IsKeyPressed(GLFW_KEY_W)) vertexArray[19] += (yMoveDelta * ((float)dt / 50000.0f));
+        if (Input::IsKeyPressed(GLFW_KEY_S)) vertexArray[19] += -(yMoveDelta * ((float)dt / 50000.0f));
+
+        if (Input::IsKeyPressed(GLFW_KEY_J)) vertexArray[9] += -(xMoveDelta * ((float)dt / 50000.0f));
+        if (Input::IsKeyPressed(GLFW_KEY_L)) vertexArray[9] += (xMoveDelta * ((float)dt / 50000.0f));
+        if (Input::IsKeyPressed(GLFW_KEY_I)) vertexArray[10] += (yMoveDelta * ((float)dt / 50000.0f));
+        if (Input::IsKeyPressed(GLFW_KEY_K)) vertexArray[10] += -(yMoveDelta * ((float)dt / 50000.0f));
+
+        vertexArray[27] = Input::GetMouseX();
+        vertexArray[28] = ScreenHeight - Input::GetMouseY();
 
         // Start imgui frame
         ImGui_ImplOpenGL3_NewFrame();
@@ -173,6 +191,11 @@ void MainLoop::run()
         shader.SetUniformMat4fv("uProjection", camera.getProjectionMatrix());
         shader.SetUniformMat4fv("uView", camera.getViewMatrix());
 
+        // update verticies
+        GLCall(glBindBuffer(GL_ARRAY_BUFFER, vboID));
+        // upload verticies
+        GLCall(glBufferData(GL_ARRAY_BUFFER, 36 * sizeof(float), vertexArray, GL_DYNAMIC_DRAW));
+
         // binding and enabling
         shader.Bind();                        // bind shader
         GLCall(glBindVertexArray(vaoID));     // bind vao
@@ -203,9 +226,16 @@ void MainLoop::run()
         // swap buffers
         glfwSwapBuffers(Window::GetWindow());
 
+        // calculate frame time
+        long frameTimeEnd = Time::GetTime();
+        frameTime = frameTimeEnd - frameTimeStart;
         endTime = Time::GetTime();
+
+        // calculate delta time
         dt = endTime - beginTime;
         beginTime = endTime;
+
+        Framerate::Sleep(60.0f, frameTime);
     }
 
     // Cleanup
