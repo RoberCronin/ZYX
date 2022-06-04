@@ -64,7 +64,7 @@ void MainLoop::run()
     GLCall(glGenBuffers(1, &vboID));
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, vboID));
     // upload verticies
-    GLCall(glBufferData(GL_ARRAY_BUFFER, 36 * sizeof(float), vertexArray, GL_DYNAMIC_DRAW));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, 36 * sizeof(float), nullptr, GL_DYNAMIC_DRAW));
 
     // create the ebo buffer
     GLuint eboID;
@@ -127,6 +127,7 @@ void MainLoop::run()
     long frameTime;
     long dt = 0;
     float frameRate = 60.0f;
+    bool limitFramerate = true;
 
     const float yMoveDelta = 720.0 / 100.0;
     const float xMoveDelta = 1280.0 / 100.0;
@@ -164,6 +165,7 @@ void MainLoop::run()
         {
             ImGui::Begin("Debug");
             ImGui::SliderFloat("Framerate", &frameRate, 1.0f, 200.0f);
+            ImGui::Checkbox("Disable Framelimiter", &limitFramerate);
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             ImGui::Text("Mouse X: %.1f Mouse Y: %.1f", Input::GetMouseX(), Input::GetMouseY());
             ImGui::Text("x1: %.3f     y1: %.3f     z1: %.3f     w1: %.3f", location.x, location.y, location.z, location.w);
@@ -196,7 +198,7 @@ void MainLoop::run()
         // update verticies
         GLCall(glBindBuffer(GL_ARRAY_BUFFER, vboID));
         // upload verticies
-        GLCall(glBufferData(GL_ARRAY_BUFFER, 36 * sizeof(float), vertexArray, GL_DYNAMIC_DRAW));
+        GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, 36 * sizeof(float), vertexArray));
 
         // binding and enabling
         shader.Bind();                        // bind shader
@@ -236,8 +238,7 @@ void MainLoop::run()
         // calculate delta time
         dt = endTime - beginTime;
         beginTime = endTime;
-
-        Framerate::Sleep(frameRate, frameTime);
+        if (limitFramerate) Framerate::Sleep(frameRate, frameTime);
     }
 
     // Cleanup
