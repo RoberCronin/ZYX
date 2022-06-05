@@ -11,6 +11,7 @@ VertexArrayObject::VertexArrayObject()
 void VertexArrayObject::AddVertexAttribute(const int& count, const int& type)
 {
     ValidateVertexAttributeType(type);
+    ValidateVertexAttributeCount(count);
 
     m_VertexAttributes.push_back({
         (unsigned int)m_VertexAttributes.size(), // index
@@ -85,6 +86,21 @@ void VertexArrayObject::ValidateVertexAttributeType(const int& type)
         break;
     default:
         throw std::range_error("Need to specify correct GL type when creating vertex attributes");
+        break;
+    }
+}
+
+void VertexArrayObject::ValidateVertexAttributeCount(const int& count)
+{
+    switch (count)
+    {
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+        break;
+    default:
+        throw std::range_error("Vertex attribute count needs to be a number between 1 and 4");
         break;
     }
 }

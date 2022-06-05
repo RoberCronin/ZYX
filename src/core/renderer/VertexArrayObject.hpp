@@ -39,6 +39,7 @@ private:
     int CalculateStride();
     int CalculateOffset();
     void ValidateVertexAttributeType(const int& type);
+    void ValidateVertexAttributeCount(const int& count);
     int SizeOfGLType(const int& type);
 
     GLuint m_VaoID;
