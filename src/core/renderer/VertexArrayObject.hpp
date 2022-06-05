@@ -9,7 +9,17 @@ class VertexArrayObject
 public:
     VertexArrayObject();
 
+    // adds a vertex attribute to stack, valid types are:
+    // GL_BYTE
+    // GL_UNSIGNED_BYTE
+    // GL_SHORT
+    // GL_UNSIGNED_SHORT
+    // GL_INT
+    // GL_UNSIGNED_INT
+    // GL_FLOAT
+    // GL_DOUBLE
     void AddVertexAttribute(const int& count, const int& type);
+    // calls glVertexAttribPointer for each attribute
     void SetVertexAttributes();
 
     void Bind();
@@ -22,7 +32,7 @@ private:
         int componentCount;
         int type;
         // bool normalized; // always use GL_FALSE so don't need to store if it is normalized
-        //  unsigned int stride;
+        //  unsigned int stride; // stride is the same for all vertex attributes, so only need to calculate it once
         int pointer;
     };
 
