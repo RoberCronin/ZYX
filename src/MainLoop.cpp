@@ -4,6 +4,7 @@
 #include "core/include.hpp"
 #include "core/input/Input.hpp"
 #include "core/renderer/Framerate.hpp"
+#include "core/renderer/VertexArrayObject.hpp"
 
 #include <GL/gl.h>
 #include <GLFW/glfw3.h>
@@ -13,9 +14,9 @@
 void MainLoop::run()
 {
     // Create Window
-    const unsigned int ScreenWidth = 1280;
-    const unsigned int ScreenHeight = 720;
-    Window::MakeWindow(ScreenWidth, ScreenHeight, "ZYX");
+    const unsigned int screenWidth = 1280;
+    const unsigned int screenHeight = 720;
+    Window::MakeWindow(screenWidth, screenHeight, "ZYX");
 
     // create shader
     Shader shader("res/shaders/default", Window::GetWindow());
@@ -37,7 +38,7 @@ void MainLoop::run()
     stbi_image_free(logo[0].pixels);
 
     // create camera
-    Camera camera((glm::vec2()), ScreenWidth, ScreenHeight);
+    Camera camera((glm::vec2()), screenWidth, screenHeight);
 
     // create square
     float vertexArray[] = {
@@ -55,9 +56,8 @@ void MainLoop::run()
     };
 
     // create vao
-    GLuint vaoID;
-    GLCall(glGenVertexArrays(1, &vaoID));
-    GLCall(glBindVertexArray(vaoID));
+    VertexArrayObject vao;
+    vao.Bind();
 
     // create vbo buffer
     GLuint vboID;
@@ -79,16 +79,11 @@ void MainLoop::run()
     int uvSize = 2;
     int vertexSize = (positionsSize + colorSize + uvSize) * sizeof(float);
 
-    // position
-    GLCall(glVertexAttribPointer(0, positionsSize, GL_FLOAT, GL_FALSE, vertexSize, (const void*)0));
-    GLCall(glEnableVertexAttribArray(0));
-    // color
-    GLCall(glVertexAttribPointer(1, colorSize, GL_FLOAT, GL_FALSE, vertexSize, (const void*)(positionsSize * sizeof(float))));
-    GLCall(glEnableVertexAttribArray(1));
+    vao.AddVertexAttribute(3, GL_FLOAT); // position
+    vao.AddVertexAttribute(4, GL_FLOAT); // color
+    vao.AddVertexAttribute(2, GL_FLOAT); // uv coordinates
 
-    // uv coordinates
-    GLCall(glVertexAttribPointer(2, uvSize, GL_FLOAT, GL_FALSE, vertexSize, (const void*)((positionsSize + colorSize) * sizeof(float))));
-    GLCall(glEnableVertexAttribArray(2));
+    vao.SetVertexAttributes();
 
     // imgui
     IMGUI_CHECKVERSION();
@@ -152,7 +147,7 @@ void MainLoop::run()
         if (Input::IsKeyPressed(GLFW_KEY_K)) vertexArray[10] += -(yMoveDelta * ((float)dt / 50000.0f));
 
         vertexArray[27] = Input::GetMouseX();
-        vertexArray[28] = ScreenHeight - Input::GetMouseY();
+        vertexArray[28] = screenHeight - Input::GetMouseY();
 
         // Start imgui frame
         ImGui_ImplOpenGL3_NewFrame();
@@ -202,7 +197,7 @@ void MainLoop::run()
 
         // binding and enabling
         shader.Bind();                        // bind shader
-        GLCall(glBindVertexArray(vaoID));     // bind vao
+        vao.Bind();                           // bind vao
         GLCall(glEnableVertexAttribArray(0)); // enable positions
         GLCall(glEnableVertexAttribArray(1)); // enable colors
 

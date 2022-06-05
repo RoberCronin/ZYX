@@ -22,6 +22,7 @@ src/core/renderer/Shader.cpp
 src/core/Camera.cpp
 src/core/Texture.cpp
 src/core/renderer/Framerate.cpp
+src/core/renderer/VertexArrayObject.cpp
 
 external/stb_image/stb_image.cpp
 external/imgui/imgui_demo.cpp

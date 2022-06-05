@@ -12,6 +12,9 @@ public:
     glm::mat4 getViewMatrix();
     inline glm::mat4 getProjectionMatrix() { return m_ProjectionMatrix; }
 
+    void SetScreenWidth(const int& width);
+    void SetScreenHeight(const int& height);
+
     void MoveX(const float& moveDelta);
     void MoveY(const float& moveDelta);
 

@@ -30,6 +30,16 @@ glm::mat4 Camera::getViewMatrix()
     return m_ViewMatrix;
 }
 
+void Camera::SetScreenWidth(const int& width)
+{
+    m_ScreenSpaceWidth = width;
+}
+
+void Camera::SetScreenHeight(const int& height)
+{
+    m_ScreenSpacHeight = height;
+}
+
 void Camera::MoveX(const float& moveDelta)
 {
     m_Position.x += moveDelta;
