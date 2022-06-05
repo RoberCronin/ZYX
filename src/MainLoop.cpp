@@ -2,9 +2,6 @@
 #include "Style.hpp"
 
 #include "core/include.hpp"
-#include "core/input/Input.hpp"
-#include "core/renderer/Framerate.hpp"
-#include "core/renderer/VertexArrayObject.hpp"
 
 #include <GL/gl.h>
 #include <GLFW/glfw3.h>
@@ -73,12 +70,7 @@ void MainLoop::run()
     // upload indicies
     GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), elementArray, GL_DYNAMIC_DRAW));
 
-    // size of each attribute
-    int positionsSize = 3;
-    int colorSize = 4;
-    int uvSize = 2;
-    int vertexSize = (positionsSize + colorSize + uvSize) * sizeof(float);
-
+    // add vertex attributes
     vao.AddVertexAttribute(3, GL_FLOAT); // position
     vao.AddVertexAttribute(4, GL_FLOAT); // color
     vao.AddVertexAttribute(2, GL_FLOAT); // uv coordinates
