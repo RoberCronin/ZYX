@@ -13,12 +13,15 @@ void VertexArrayObject::AddVertexAttribute(const int& count, const int& type)
     ValidateVertexAttributeType(type);
     ValidateVertexAttributeCount(count);
 
-    m_VertexAttributes.push_back({
-        (unsigned int)m_VertexAttributes.size(), // index
-        count,                                   // componentCount
-        type,                                    // type
-        CalculateOffset()                        // pointer
-    });
+    VertexAttribute vertexAttribute;
+
+    // set values
+    vertexAttribute.index = (unsigned int)m_VertexAttributes.size();
+    vertexAttribute.componentCount = count;
+    vertexAttribute.type = type;
+    vertexAttribute.pointer = CalculateOffset();
+
+    m_VertexAttributes.push_back(vertexAttribute);
 }
 
 void VertexArrayObject::SetVertexAttributes()
