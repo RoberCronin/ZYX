@@ -2,11 +2,13 @@
 #include "Style.hpp"
 
 #include "core/include.hpp"
+#include "core/renderer/VertexBufferObject.hpp"
 
 #include <GL/gl.h>
 #include <GLFW/glfw3.h>
 #include <glm/fwd.hpp>
 #include <iostream>
+#include <vector>
 
 void MainLoop::run()
 {
@@ -38,7 +40,7 @@ void MainLoop::run()
     Camera camera((glm::vec2()), screenWidth, screenHeight);
 
     // create square
-    float vertexArray[] = {
+    std::vector<float> vertexArray {
         // position           // color                // UV coordinates
         0.5f,   0.5f,   0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
         100.5f, 0.5f,   0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, // bottom right
@@ -57,11 +59,7 @@ void MainLoop::run()
     vao.Bind();
 
     // create vbo buffer
-    GLuint vboID;
-    GLCall(glGenBuffers(1, &vboID));
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, vboID));
-    // upload verticies
-    GLCall(glBufferData(GL_ARRAY_BUFFER, 36 * sizeof(float), nullptr, GL_DYNAMIC_DRAW));
+    DynamicVertexBufferObject<float> vbo(36);
 
     // create the ebo buffer
     GLuint eboID;
@@ -183,9 +181,8 @@ void MainLoop::run()
         shader.SetUniformMat4fv("uView", camera.getViewMatrix());
 
         // update verticies
-        GLCall(glBindBuffer(GL_ARRAY_BUFFER, vboID));
-        // upload verticies
-        GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, 36 * sizeof(float), vertexArray));
+        vbo.UploadVerticies(vertexArray);
+        vbo.Bind();
 
         // binding and enabling
         shader.Bind();                        // bind shader
