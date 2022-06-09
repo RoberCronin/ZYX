@@ -27,7 +27,7 @@ void MainLoop::run()
     logo[0].pixels = stbi_load("res/textures/logo.png", &logo[0].width, &logo[0].height, 0, 4);
 
     // load texture
-    Texture texture("res/textures/testTexture.png");
+    Texture texture("res/textures/testTexture.png", 0);
     shader.SetTexture("TEX_SAMPLER", 0);
     texture.Bind();
 
@@ -71,6 +71,7 @@ void MainLoop::run()
     vao.AddVertexAttribute(2, GL_FLOAT); // uv coordinates
 
     vao.SetVertexAttributes();
+    Mesh mesh(&vbo, &vao, &ebo, &texture);
 
     // imgui
     IMGUI_CHECKVERSION();
@@ -181,22 +182,16 @@ void MainLoop::run()
         vbo.UploadVerticies(vertexArray);
 
         // binding and enabling
-        shader.Bind();                        // bind shader
-        vao.Bind();                           // bind vao
-        vbo.Bind();                           // bind vbo
-        ebo.Bind();                           // bind ebo
-        GLCall(glEnableVertexAttribArray(0)); // enable positions
-        GLCall(glEnableVertexAttribArray(1)); // enable colors
+        shader.Bind();
+        mesh.Bind();
 
         // draw calls
         GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         // unbinding and disabling
-        GLCall(glDisableVertexAttribArray(0));
-        GLCall(glDisableVertexAttribArray(1));
-        GLCall(glBindVertexArray(0));
         shader.UnBind();
+        mesh.Unbind();
 
         // Update and Render additional Platform Windows
         // (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.

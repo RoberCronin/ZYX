@@ -25,6 +25,7 @@ src/core/renderer/Framerate.cpp
 src/core/renderer/VertexArrayObject.cpp
 src/core/renderer/VertexBufferObject.cpp
 src/core/renderer/ElementBufferObject.cpp
+src/core/renderer/Mesh.cpp
 
 external/stb_image/stb_image.cpp
 external/imgui/imgui_demo.cpp

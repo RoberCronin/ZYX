@@ -1,13 +1,20 @@
-#include "core/include.hpp"
-#include <GL/gl.h>
+#include "Texture.hpp"
+#include "core/Debug.hpp"
+#include "stb_image/stb_image.h"
 
-Texture::Texture(std::string filePath)
+#include <GL/glew.h>
+
+#include <GL/gl.h>
+#include <GLFW/glfw3.h>
+
+Texture::Texture(std::string filePath, unsigned int slot)
     : m_FilePath(filePath)
     , m_LocalBuffer(nullptr)
     , m_RendererID(0)
     , m_Width(0)
     , m_Height(0)
     , m_BPP(0)
+    , m_Slot(slot)
 {
     stbi_set_flip_vertically_on_load(1);
     m_LocalBuffer = stbi_load(m_FilePath.c_str(), &m_Width, &m_Height, &m_BPP, 4);

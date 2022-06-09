@@ -1,13 +1,11 @@
 #pragma once
 
-#include "core/include.hpp"
-
-#include <iostream>
+#include <string>
 
 class Texture
 {
 public:
-    Texture(std::string filePath);
+    Texture(std::string filePath, unsigned int slot);
     ~Texture();
 
     void Bind(unsigned int slot = 0) const;
@@ -21,4 +19,5 @@ private:
     unsigned int m_RendererID;
     unsigned char* m_LocalBuffer;
     int m_Width, m_Height, m_BPP;
+    unsigned int m_Slot;
 };
