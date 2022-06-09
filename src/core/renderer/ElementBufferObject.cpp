@@ -1,4 +1,6 @@
-#include "core/include.hpp"
+#include "ElementBufferObject.hpp"
+#include "core/Debug.hpp"
+
 #include <bits/iterator_concepts.h>
 
 ElementBufferObject::ElementBufferObject(std::vector<unsigned int> indicies)
