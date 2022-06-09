@@ -16,6 +16,7 @@
 #include "core/renderer/Framerate.hpp"
 #include "core/renderer/VertexArrayObject.hpp"
 #include "core/renderer/VertexBufferObject.hpp"
+#include "core/renderer/ElementBufferObject.hpp"
 
 // External libraries
 #include "stb_image/stb_image.h"

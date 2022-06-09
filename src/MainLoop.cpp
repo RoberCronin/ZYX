@@ -2,6 +2,7 @@
 #include "Style.hpp"
 
 #include "core/include.hpp"
+#include "core/renderer/ElementBufferObject.hpp"
 #include "core/renderer/VertexBufferObject.hpp"
 
 #include <GL/gl.h>
@@ -40,7 +41,7 @@ void MainLoop::run()
     Camera camera((glm::vec2()), screenWidth, screenHeight);
 
     // create square
-    std::vector<float> vertexArray {
+    std::vector<float> vertexArray{
         // position           // color                // UV coordinates
         0.5f,   0.5f,   0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
         100.5f, 0.5f,   0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, // bottom right
@@ -49,7 +50,7 @@ void MainLoop::run()
     };
 
     // counter-clockwise order
-    unsigned int elementArray[] = {
+    std::vector<unsigned int> elementArray{
         0, 1, 2, // top right tri
         0, 2, 3, // bottom left tri
     };
@@ -62,11 +63,7 @@ void MainLoop::run()
     DynamicVertexBufferObject vbo(36);
 
     // create the ebo buffer
-    GLuint eboID;
-    GLCall(glGenBuffers(1, &eboID));
-    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID));
-    // upload indicies
-    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), elementArray, GL_DYNAMIC_DRAW));
+    ElementBufferObject ebo(elementArray);
 
     // add vertex attributes
     vao.AddVertexAttribute(3, GL_FLOAT); // position
@@ -182,11 +179,12 @@ void MainLoop::run()
 
         // update verticies
         vbo.UploadVerticies(vertexArray);
-        vbo.Bind();
 
         // binding and enabling
         shader.Bind();                        // bind shader
         vao.Bind();                           // bind vao
+        vbo.Bind();                           // bind vbo
+        ebo.Bind();                           // bind ebo
         GLCall(glEnableVertexAttribArray(0)); // enable positions
         GLCall(glEnableVertexAttribArray(1)); // enable colors
 
