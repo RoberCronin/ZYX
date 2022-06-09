@@ -59,7 +59,7 @@ void MainLoop::run()
     vao.Bind();
 
     // create vbo buffer
-    DynamicVertexBufferObject<float> vbo(36);
+    DynamicVertexBufferObject vbo(36);
 
     // create the ebo buffer
     GLuint eboID;
