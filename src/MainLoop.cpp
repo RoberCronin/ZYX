@@ -39,11 +39,11 @@ void MainLoop::run()
 
     // create square
     std::vector<float> vertexArray{
-        // position           // color                // UV coordinates
-        0.5f,   0.5f,   0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
-        100.5f, 0.5f,   0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, // bottom right
-        100.5f, 100.5,  0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, // top right
-        0.5f,   100.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, // top left
+        // position           // UV coordinates
+        0.5f,   0.5f,   0.0f, 0.0f, 0.0f, // bottom left
+        100.5f, 0.5f,   0.0f, 1.0f, 0.0f, // bottom right
+        100.5f, 100.5,  0.0f, 1.0f, 1.0f, // top right
+        0.5f,   100.5f, 0.0f, 0.0f, 1.0f, // top left
     };
 
     // counter-clockwise order
@@ -64,7 +64,7 @@ void MainLoop::run()
 
     // add vertex attributes
     vao.AddVertexAttribute(3, GL_FLOAT); // position
-    vao.AddVertexAttribute(4, GL_FLOAT); // color
+    // vao.AddVertexAttribute(4, GL_FLOAT); // color
     vao.AddVertexAttribute(2, GL_FLOAT); // uv coordinates
 
     vao.SetVertexAttributes();
@@ -123,18 +123,18 @@ void MainLoop::run()
         glfwPollEvents();
 
         // input
-        if (Input::IsKeyPressed(GLFW_KEY_A)) vertexArray[18] += -(xMoveDelta * ((float)dt / 50000.0f));
-        if (Input::IsKeyPressed(GLFW_KEY_D)) vertexArray[18] += (xMoveDelta * ((float)dt / 50000.0f));
-        if (Input::IsKeyPressed(GLFW_KEY_W)) vertexArray[19] += (yMoveDelta * ((float)dt / 50000.0f));
-        if (Input::IsKeyPressed(GLFW_KEY_S)) vertexArray[19] += -(yMoveDelta * ((float)dt / 50000.0f));
+        if (Input::IsKeyPressed(GLFW_KEY_A)) vertexArray[10] += -(xMoveDelta * ((float)dt / 50000.0f));
+        if (Input::IsKeyPressed(GLFW_KEY_D)) vertexArray[10] += (xMoveDelta * ((float)dt / 50000.0f));
+        if (Input::IsKeyPressed(GLFW_KEY_W)) vertexArray[11] += (yMoveDelta * ((float)dt / 50000.0f));
+        if (Input::IsKeyPressed(GLFW_KEY_S)) vertexArray[11] += -(yMoveDelta * ((float)dt / 50000.0f));
 
-        if (Input::IsKeyPressed(GLFW_KEY_J)) vertexArray[9] += -(xMoveDelta * ((float)dt / 50000.0f));
-        if (Input::IsKeyPressed(GLFW_KEY_L)) vertexArray[9] += (xMoveDelta * ((float)dt / 50000.0f));
-        if (Input::IsKeyPressed(GLFW_KEY_I)) vertexArray[10] += (yMoveDelta * ((float)dt / 50000.0f));
-        if (Input::IsKeyPressed(GLFW_KEY_K)) vertexArray[10] += -(yMoveDelta * ((float)dt / 50000.0f));
+        if (Input::IsKeyPressed(GLFW_KEY_J)) vertexArray[5] += -(xMoveDelta * ((float)dt / 50000.0f));
+        if (Input::IsKeyPressed(GLFW_KEY_L)) vertexArray[5] += (xMoveDelta * ((float)dt / 50000.0f));
+        if (Input::IsKeyPressed(GLFW_KEY_I)) vertexArray[6] += (yMoveDelta * ((float)dt / 50000.0f));
+        if (Input::IsKeyPressed(GLFW_KEY_K)) vertexArray[6] += -(yMoveDelta * ((float)dt / 50000.0f));
 
-        vertexArray[27] = Input::GetMouseX();
-        vertexArray[28] = screenHeight - Input::GetMouseY();
+        vertexArray[15] = Input::GetMouseX();
+        vertexArray[16] = screenHeight - Input::GetMouseY();
 
         // Start imgui frame
         ImGui_ImplOpenGL3_NewFrame();
@@ -164,7 +164,6 @@ void MainLoop::run()
         vbo.UploadVerticies(vertexArray);
 
         // Rendering
-
         renderer.StartScene(&camera, &shader);
 
         // imgui pre-rendering step
