@@ -1,4 +1,5 @@
 #include "Mesh.hpp"
+#include "core/Texture.hpp"
 
 Mesh::Mesh(DynamicVertexBufferObject* vbo, VertexArrayObject* vao, ElementBufferObject* ebo, Texture* texture)
     : m_VboPointer(vbo)
@@ -27,4 +28,9 @@ void Mesh::Unbind()
 unsigned int Mesh::GetIndiciesCount()
 {
     return m_EboPointer->GetCount();
+}
+
+unsigned int Mesh::GetTextureSlot()
+{
+    return m_Texture->GetSlot();
 }

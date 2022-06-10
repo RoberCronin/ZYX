@@ -11,6 +11,8 @@ public:
     void Bind(unsigned int slot = 0) const;
     void Unbind() const;
 
+    unsigned int GetSlot();
+
     inline int GetWidth() { return m_Width; }
     inline int GetHegiht() { return m_Height; }
 

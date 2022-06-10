@@ -26,7 +26,6 @@ void MainLoop::run()
 
     // load texture
     Texture texture("res/textures/testTexture.png", 0);
-    shader.SetTexture("TEX_SAMPLER", 0);
     texture.Bind();
 
     // set icon to logo

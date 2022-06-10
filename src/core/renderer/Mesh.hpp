@@ -14,6 +14,7 @@ public:
     void Unbind();
 
     unsigned int GetIndiciesCount();
+    unsigned int GetTextureSlot();
 
 private:
     DynamicVertexBufferObject* m_VboPointer;

@@ -55,6 +55,7 @@ void Renderer::Render()
     for (const auto mesh : m_Meshs)
     {
         mesh->Bind();
+        m_Shader->SetTexture("TEX_SAMPLER", mesh->GetTextureSlot());
         GLCall(glDrawElements(GL_TRIANGLES, mesh->GetIndiciesCount(), GL_UNSIGNED_INT, 0));
         mesh->Unbind();
     }
