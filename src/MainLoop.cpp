@@ -2,8 +2,6 @@
 #include "Style.hpp"
 
 #include "core/include.hpp"
-#include "core/renderer/ElementBufferObject.hpp"
-#include "core/renderer/VertexBufferObject.hpp"
 
 #include <GL/gl.h>
 #include <GLFW/glfw3.h>
@@ -72,6 +70,8 @@ void MainLoop::run()
 
     vao.SetVertexAttributes();
     Mesh mesh(&vbo, &vao, &ebo, &texture);
+
+    Renderer renderer;
 
     // imgui
     IMGUI_CHECKVERSION();
@@ -161,7 +161,12 @@ void MainLoop::run()
             ImGui::End();
         }
 
+        // update verticies
+        vbo.UploadVerticies(vertexArray);
+
         // Rendering
+
+        renderer.StartScene(&camera, &shader);
 
         // imgui pre-rendering step
         ImGui::Render();
@@ -173,25 +178,19 @@ void MainLoop::run()
         GLCall(glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w));
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
-        // update uniforms
-        shader.Bind(); // have to bind shader before setting uniforms
-        shader.SetUniformMat4fv("uProjection", camera.getProjectionMatrix());
-        shader.SetUniformMat4fv("uView", camera.getViewMatrix());
+        // setup scene
+        renderer.AddMesh(&mesh);
 
-        // update verticies
-        vbo.UploadVerticies(vertexArray);
+        // update uniforms
 
         // binding and enabling
-        shader.Bind();
-        mesh.Bind();
 
         // draw calls
-        GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
+        renderer.EndScene();
+        renderer.Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         // unbinding and disabling
-        shader.UnBind();
-        mesh.Unbind();
 
         // Update and Render additional Platform Windows
         // (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.

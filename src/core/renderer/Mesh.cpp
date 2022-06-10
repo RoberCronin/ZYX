@@ -23,3 +23,8 @@ void Mesh::Unbind()
     m_EboPointer->Unbind();
     m_Texture->Unbind();
 }
+
+unsigned int Mesh::GetIndiciesCount()
+{
+    return m_EboPointer->GetCount();
+}

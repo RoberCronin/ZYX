@@ -13,6 +13,8 @@ public:
     void Bind();
     void Unbind();
 
+    unsigned int GetIndiciesCount();
+
 private:
     DynamicVertexBufferObject* m_VboPointer;
     VertexArrayObject* m_VaoPointer;

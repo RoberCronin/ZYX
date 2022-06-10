@@ -45,6 +45,11 @@ void VertexArrayObject::Unbind()
     GLCall(glBindVertexArray(0));
 }
 
+inline unsigned int VertexArrayObject::GetCount() const
+{
+    return m_VertexAttributes.size();
+}
+
 int VertexArrayObject::CalculateStride()
 {
     int stride = 0;

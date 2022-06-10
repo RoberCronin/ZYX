@@ -18,6 +18,7 @@
 #include "core/renderer/VertexBufferObject.hpp"
 #include "core/renderer/ElementBufferObject.hpp"
 #include "core/renderer/Mesh.hpp"
+#include "core/renderer/Renderer.hpp"
 
 // External libraries
 #include "stb_image/stb_image.h"

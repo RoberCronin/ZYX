@@ -27,6 +27,8 @@ public:
     void Bind();
     void Unbind();
 
+    inline unsigned int GetCount() const; 
+
 private:
     struct VertexAttribute
     {

@@ -14,6 +14,9 @@ public:
     void Bind();
     void Unbind();
 
+    unsigned int GetCount();
+
 private:
     GLuint m_EboID;
+    unsigned int m_Count;
 };

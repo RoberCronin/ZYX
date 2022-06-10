@@ -4,6 +4,7 @@
 #include <bits/iterator_concepts.h>
 
 ElementBufferObject::ElementBufferObject(std::vector<unsigned int> indicies)
+    : m_Count(indicies.size())
 {
     GLCall(glGenBuffers(1, &m_EboID));
     Bind();
@@ -19,4 +20,9 @@ void ElementBufferObject::Bind()
 void ElementBufferObject::Unbind()
 {
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+}
+
+unsigned int ElementBufferObject::GetCount()
+{
+    return m_Count;
 }
