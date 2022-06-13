@@ -2,6 +2,8 @@
 #include "Style.hpp"
 
 #include "core/include.hpp"
+#include "core/renderer/ElementBufferObject.hpp"
+#include "core/renderer/VertexArrayObject.hpp"
 
 #include <GL/gl.h>
 #include <GLFW/glfw3.h>
@@ -68,7 +70,7 @@ void MainLoop::run()
     vao.AddVertexAttribute(2, GL_FLOAT); // uv coordinates
 
     vao.SetVertexAttributes();
-    Mesh mesh(&vbo, &vao, &ebo, &texture);
+    Mesh meshMain(&vbo, &vao, &ebo, &texture);
 
     Renderer renderer;
 
@@ -177,7 +179,7 @@ void MainLoop::run()
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
         // setup scene
-        renderer.AddMesh(&mesh);
+        renderer.Submit(&meshMain);
 
         // update uniforms
 

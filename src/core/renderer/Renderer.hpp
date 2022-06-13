@@ -12,7 +12,7 @@ public:
     Renderer();
 
     void StartScene(Camera* camera, Shader* shader);
-    void AddMesh(Mesh* mesh);
+    void Submit(Mesh* mesh);
     void EndScene();
 
     void Render();

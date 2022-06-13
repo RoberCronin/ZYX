@@ -20,7 +20,7 @@ void Renderer::StartScene(Camera* camera, Shader* shader)
     m_SceneStarted = true;
 }
 
-void Renderer::AddMesh(Mesh* mesh)
+void Renderer::Submit(Mesh* mesh)
 {
     if (m_SceneStarted == false)
     {
