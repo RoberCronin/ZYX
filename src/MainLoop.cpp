@@ -2,14 +2,26 @@
 #include "Style.hpp"
 
 #include "core/include.hpp"
+#include "core/input/Input.hpp"
 #include "core/renderer/ElementBufferObject.hpp"
 #include "core/renderer/VertexArrayObject.hpp"
+#include "core/renderer/entity.hpp"
 
 #include <GL/gl.h>
 #include <GLFW/glfw3.h>
 #include <glm/fwd.hpp>
 #include <iostream>
 #include <vector>
+
+glm::vec2 newPos(const entity& ent, float prevXDelta, float prevYDelta, const unsigned int screenWidth, const unsigned int screenHeight)
+{
+    glm::vec2 updatedPos(prevXDelta, prevYDelta);
+
+    if (ent.GetPosX() < 0 && prevXDelta > 0) updatedPos.x *= -1;
+    if (ent.GetPosX() + ent.GetWidth() > screenWidth && prevXDelta < 0) updatedPos.x *= -1;
+
+    return updatedPos;
+}
 
 void MainLoop::run()
 {
@@ -26,9 +38,9 @@ void MainLoop::run()
     GLFWimage logo[1];
     logo[0].pixels = stbi_load("res/textures/logo.png", &logo[0].width, &logo[0].height, 0, 4);
 
-    // load texture
-    Texture texture("res/textures/testTexture.png", 0);
-    texture.Bind();
+    // // load texture
+    // Texture texture("res/textures/testTexture.png", 0);
+    // texture.Bind();
 
     // set icon to logo
     glfwSetWindowIcon(Window::GetWindow(), 1, logo);
@@ -39,38 +51,12 @@ void MainLoop::run()
     // create camera
     Camera camera((glm::vec2()), screenWidth, screenHeight);
 
-    // create square
-    std::vector<float> vertexArray{
-        // position           // UV coordinates
-        0.5f,   0.5f,   0.0f, 0.0f, 0.0f, // bottom left
-        100.5f, 0.5f,   0.0f, 1.0f, 0.0f, // bottom right
-        100.5f, 100.5,  0.0f, 1.0f, 1.0f, // top right
-        0.5f,   100.5f, 0.0f, 0.0f, 1.0f, // top left
-    };
+    std::vector<entity> entities;
 
-    // counter-clockwise order
-    std::vector<unsigned int> elementArray{
-        0, 1, 2, // top right tri
-        0, 2, 3, // bottom left tri
-    };
-
-    // create vao
-    VertexArrayObject vao;
-    vao.Bind();
-
-    // create vbo buffer
-    DynamicVertexBufferObject vbo(36);
-
-    // create the ebo buffer
-    ElementBufferObject ebo(elementArray);
-
-    // add vertex attributes
-    vao.AddVertexAttribute(3, GL_FLOAT); // position
-    // vao.AddVertexAttribute(4, GL_FLOAT); // color
-    vao.AddVertexAttribute(2, GL_FLOAT); // uv coordinates
-
-    vao.SetVertexAttributes();
-    Mesh meshMain(&vbo, &vao, &ebo, &texture);
+    entities.push_back(entity("res/textures/testTexture.png", 100, 100, 0, 0));
+    entities.push_back(entity("res/textures/testTexture.png", 100, 100, 400, 100));
+    entities.push_back(entity("res/textures/testTexture.png", 100, 100, 900, 70));
+    entities.push_back(entity("res/textures/testTexture.png", 100, 100, Input::GetMouseX(), Input::GetMouseY()));
 
     Renderer renderer;
 
@@ -112,6 +98,8 @@ void MainLoop::run()
     long dt = 0;
     float frameRate = 60.0f;
     bool limitFramerate = true;
+    float XDelta = 5.0;
+    float YDelta = 5.0;
 
     const float yMoveDelta = 720.0 / 100.0;
     const float xMoveDelta = 1280.0 / 100.0;
@@ -123,20 +111,6 @@ void MainLoop::run()
 
         //  poll events
         glfwPollEvents();
-
-        // input
-        if (Input::IsKeyPressed(GLFW_KEY_A)) vertexArray[10] += -(xMoveDelta * ((float)dt / 50000.0f));
-        if (Input::IsKeyPressed(GLFW_KEY_D)) vertexArray[10] += (xMoveDelta * ((float)dt / 50000.0f));
-        if (Input::IsKeyPressed(GLFW_KEY_W)) vertexArray[11] += (yMoveDelta * ((float)dt / 50000.0f));
-        if (Input::IsKeyPressed(GLFW_KEY_S)) vertexArray[11] += -(yMoveDelta * ((float)dt / 50000.0f));
-
-        if (Input::IsKeyPressed(GLFW_KEY_J)) vertexArray[5] += -(xMoveDelta * ((float)dt / 50000.0f));
-        if (Input::IsKeyPressed(GLFW_KEY_L)) vertexArray[5] += (xMoveDelta * ((float)dt / 50000.0f));
-        if (Input::IsKeyPressed(GLFW_KEY_I)) vertexArray[6] += (yMoveDelta * ((float)dt / 50000.0f));
-        if (Input::IsKeyPressed(GLFW_KEY_K)) vertexArray[6] += -(yMoveDelta * ((float)dt / 50000.0f));
-
-        vertexArray[15] = Input::GetMouseX();
-        vertexArray[16] = screenHeight - Input::GetMouseY();
 
         // Start imgui frame
         ImGui_ImplOpenGL3_NewFrame();
@@ -162,8 +136,18 @@ void MainLoop::run()
             ImGui::End();
         }
 
+        // update scene
+
+        if (entities[1].GetPosX() + entities[1].GetWidth() + XDelta > screenWidth) XDelta = -5.0f;
+        if (entities[1].GetPosX() + XDelta < 0) XDelta = 5.0f;
+
+        if (entities[1].GetPosY() + entities[1].GetHeight() + YDelta > screenHeight) YDelta = -5.0f;
+        if (entities[1].GetPosY() + YDelta < 0) YDelta = 5.0f;
+
+        entities[1].Move(entities[1].GetPosX() + XDelta, entities[1].GetPosY() + YDelta);
+
         // update verticies
-        vbo.UploadVerticies(vertexArray);
+        // vbo.UploadVerticies(vertexArray);
 
         // Rendering
         renderer.StartScene(&camera, &shader);
@@ -179,7 +163,14 @@ void MainLoop::run()
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
         // setup scene
-        renderer.Submit(&meshMain);
+        // renderer.Submit(&meshMain);
+
+        entities[0].Move(Input::GetMouseX(), Input::GetMouseY());
+        for (int i = 0; i < entities.size(); i++)
+        {
+            renderer.Submit(&entities[i]);
+            entities[i].UpdateVerts();
+        }
 
         // update uniforms
 

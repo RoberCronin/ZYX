@@ -16,7 +16,7 @@ Camera::Camera(glm::vec2 position, unsigned int screenSpaceWidth, unsigned int s
 void Camera::adjustProjection()
 {
     m_ProjectionMatrix = glm::mat4(1.0f);
-    m_ProjectionMatrix *= glm::ortho(0.0f, (float)m_ScreenSpaceWidth, 0.0f, (float)m_ScreenSpacHeight, 0.0f, 100.0f);
+    m_ProjectionMatrix *= glm::ortho(0.0f, (float)m_ScreenSpaceWidth, (float)m_ScreenSpacHeight, 0.0f, 0.0f, 100.0f);
 }
 
 glm::mat4 Camera::getViewMatrix()

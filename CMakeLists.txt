@@ -27,6 +27,7 @@ src/core/renderer/VertexBufferObject.cpp
 src/core/renderer/ElementBufferObject.cpp
 src/core/renderer/Mesh.cpp
 src/core/renderer/Renderer.cpp
+src/core/renderer/entity.cpp
 
 external/stb_image/stb_image.cpp
 external/imgui/imgui_demo.cpp

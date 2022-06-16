@@ -19,6 +19,7 @@
 #include "core/renderer/ElementBufferObject.hpp"
 #include "core/renderer/Mesh.hpp"
 #include "core/renderer/Renderer.hpp"
+#include "core/renderer/entity.hpp"
 
 // External libraries
 #include "stb_image/stb_image.h"
